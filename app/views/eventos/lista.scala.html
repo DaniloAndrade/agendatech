@@ -1,0 +1,11 @@
+@(eventos:List[Evento])
+<!DOCTYPE html>
+<html>
+<body>
+    <ul>
+        @for(evento <- eventos){
+            <li>@evento.getNome() - @evento.getSite()</li>
+        }
+    </ul>
+</body>
+</html>

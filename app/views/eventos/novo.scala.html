@@ -1,0 +1,41 @@
+@(eventoForm:Form[Evento])
+<!DOCTYPE html>
+<html>
+<body>
+	<form action="@routes.EventosController.criar()" method="post">
+		<div>
+            <label for="nome">Nome:</label>
+            <input  type="text" id="nome" name="nome"  value="@eventoForm.apply("nome").value()"/><br/>
+            <div class="errors">
+                @for(error <- eventoForm.apply("nome").errors){
+                    <span style="color:red">@error.message</span>
+                }
+            </div>
+        </div>
+        <div>
+            <label for="emailParaContato">Email pra contato:</label>
+            <input type="text" id="emailParaContato" name="emailParaContato" value="@eventoForm.apply("emailParaContato").value()"/><br/>
+            <div class="errors">
+                @for(error <- eventoForm.apply("emailParaContato").errors){
+                    <span style="color: red">@error.message</span>
+                }
+            </div>
+        </div>
+
+        <label for="descricao">Descrição</label>
+        <textarea rows="5" cols="5" id="descricao" name="descricao" >@eventoForm.apply("descricao").value()</textarea><br/>
+
+        <label for="estado">Estado:</label>
+        <select name="estado" id="estado">
+            @for(estado <- Estado.values){<option value="@estado.name">@estado.name</option> }
+        </select><br/>
+		<label for="site">Site:</label>
+        <input type="text" id="site" name="site" value="@eventoForm.apply("site").value()" /><br/>
+        <label for="dataDeInicio">Inicio:</label>
+        <input name="dataDeInicio" type="date" id="dataDeInicio" value="@eventoForm.apply("dataDeInicio").value()"/><br/>
+        <label for="dataDeInicio">Inicio:</label>
+        <input name="dataDeInicio" type="date" id="dataDeInicio" value="@eventoForm.apply("dataDeInicio").value()"/><br/>
+		<input type="submit" value="Novo Evento"/>
+	</form>
+</body>
+</html>
