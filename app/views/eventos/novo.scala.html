@@ -5,7 +5,7 @@
 <html>
 <body>
 
-    @form(routes.EventosController.criar()){
+    @form(routes.EventosController.criar(),'enctype -> "multipart/form-data" ){
         @inputText(eventoForm("nome"), '_label -> "Nome:")
         @inputText(eventoForm("emailParaContato"), '_label -> "Email:", 'type -> "email")
         @textarea(eventoForm("descricao") , '_label -> "Descrição")
@@ -15,8 +15,12 @@
             '_label -> "Estado:"
         )
         @inputText(eventoForm("site"), '_label -> "Site:")
-        @inputText(eventoForm("dataDeInicio"), '_label -> "Inicio:", 'type -> "date")
-        @inputText(eventoForm("dataDeFim"), '_label -> "Fim:", 'type -> "date")
+        @inputFile(eventoForm("destaque"), '_label -> "Destaque:")
+        <fieldset>
+            <legend>Periodo</legend>
+            @inputDate(eventoForm("dataDeInicio"), '_label -> "Inicio:")
+            @inputDate(eventoForm("dataDeFim"), '_label -> "Fim:")
+        </fieldset>
 
         <input type="submit" value="Novo Evento"/>
     }

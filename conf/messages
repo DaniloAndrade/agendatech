@@ -1,0 +1,4 @@
+constraint.required = Preenchimento obrigatório
+error.required = O campo não foi preenchido
+validations.fromNow =
+error.fromNow = O data deve ser hoje ou futura
