@@ -2,10 +2,13 @@ package models;
 
 import org.hibernate.validator.constraints.URL;
 import play.data.validation.Constraints;
+import play.data.validation.ValidationError;
 import validators.annotations.FromNow;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by danilo on 07/03/14.
@@ -33,6 +36,7 @@ public class Evento {
     @FromNow
     private Calendar dataDeInicio;
     private Calendar dataDeFim;
+    private boolean aprovado;
 
 
 
@@ -116,7 +120,15 @@ public class Evento {
         this.caminhoImagem = caminhoImagem;
     }
 
-    /*public List<ValidationError> validate(){
+    public boolean isAprovado() {
+        return aprovado;
+    }
+
+    public void setAprovado(boolean aprovado) {
+        this.aprovado = aprovado;
+    }
+
+    public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
 
         if (dataDeFim == null){
@@ -128,5 +140,5 @@ public class Evento {
             errors.add(new ValidationError("dataDeFim", "O fim deve ser após o inicio"));
         }
         return errors.isEmpty() ? null : errors;
-    }*/
+    }
 }

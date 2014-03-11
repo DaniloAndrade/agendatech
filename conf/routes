@@ -13,3 +13,5 @@ GET         /eventos/novo        controllers.EventosController.novo()
 POST        /eventos             controllers.EventosController.criar()
 
 GET         /eventos             controllers.EventosController.listar()
+
+GET         /eventos/todos       controllers.admin.TodosEventosController.todos()

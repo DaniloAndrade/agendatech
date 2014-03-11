@@ -2,6 +2,7 @@ package controllers;
 
 import com.avaje.ebean.Ebean;
 import models.Evento;
+import org.apache.commons.io.FileUtils;
 import play.api.templates.Html;
 import play.data.Form;
 import play.mvc.Controller;
@@ -26,8 +27,6 @@ public class EventosController extends Controller {
     }
 
     public static Result criar() throws IOException{
-
-
         Form<Evento> fromRequest = eventoForm.bindFromRequest();
         if(fromRequest.hasErrors()){
             return badRequest(views.html.eventos.novo.render(fromRequest));
@@ -49,7 +48,8 @@ public class EventosController extends Controller {
         Http.MultipartFormData.FilePart destaque = multipartFormData.getFile("destaque");
         File file = destaque.getFile();
         File destino = getFileDistino(destaque);
-        Files.move(file.toPath(), destino.toPath());
+        //Files.move(file.toPath(), destino.toPath());
+        FileUtils.moveFile(file, destino);
         return destino;
     }
 

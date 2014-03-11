@@ -1,0 +1,19 @@
+@(naoAprovados:List[Evento], aprovados:List[Evento])
+<!DOCTYPE html>
+<html>
+<body>
+    <h3>Não aprovados</h3>
+    <ul>
+        @for(evento <- naoAprovados){
+            <li>@evento.getNome() - <a href="#">Aprovar</a></li>
+        }
+    </ul>
+    <hr/>
+    <h3>Aprovados</h3>
+    <ul>
+        @for(evento <- aprovados){
+            <li>@evento.getNome()</li>
+        }
+    </ul>
+</body>
+</html>
