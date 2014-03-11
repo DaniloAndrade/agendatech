@@ -26,20 +26,35 @@ public class EventosController extends Controller {
     }
 
     public static Result criar() throws IOException{
+
+
         Form<Evento> fromRequest = eventoForm.bindFromRequest();
         if(fromRequest.hasErrors()){
             return badRequest(views.html.eventos.novo.render(fromRequest));
         }
+        File destino = gravarArquivo();
+        Evento evento = fromRequest.get();
+        evento.setCaminhoImagem(destino.getName());
+        try {
+            Ebean.save(evento);
+        }catch (RuntimeException e){
+            destino.delete();
+        }
+        return redirect(routes.EventosController.listar());
+    }
+
+    private static File gravarArquivo() throws IOException {
         Http.RequestBody requestBody = request().body();
         Http.MultipartFormData multipartFormData = requestBody.asMultipartFormData();
         Http.MultipartFormData.FilePart destaque = multipartFormData.getFile("destaque");
         File file = destaque.getFile();
-        File distino = new File("public/images/destaques", System.currentTimeMillis() + "_" + destaque.getFilename());
-        Files.move(file.toPath(), distino.toPath());
-        Evento evento = fromRequest.get();
-        
-        Ebean.save(evento);
-        return redirect(routes.EventosController.listar());
+        File destino = getFileDistino(destaque);
+        Files.move(file.toPath(), destino.toPath());
+        return destino;
+    }
+
+    private static File getFileDistino(Http.MultipartFormData.FilePart destaque) {
+        return new File("public/images/destaques", System.currentTimeMillis() + "_" + destaque.getFilename());
     }
 
     public static Result listar(){

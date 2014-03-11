@@ -1,15 +1,11 @@
 package models;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 import play.data.validation.Constraints;
-import play.data.validation.ValidationError;
 import validators.annotations.FromNow;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Created by danilo on 07/03/14.
@@ -33,7 +29,7 @@ public class Evento {
     private String twitter;
     @Constraints.Required
     private String nome;
-    @NotBlank
+    private String caminhoImagem;
     @FromNow
     private Calendar dataDeInicio;
     private Calendar dataDeFim;
@@ -110,6 +106,14 @@ public class Evento {
 
     public void setDataDeFim(Calendar dataDeFim) {
         this.dataDeFim = dataDeFim;
+    }
+
+    public String getCaminhoImagem() {
+        return caminhoImagem;
+    }
+
+    public void setCaminhoImagem(String caminhoImagem) {
+        this.caminhoImagem = caminhoImagem;
     }
 
     /*public List<ValidationError> validate(){
