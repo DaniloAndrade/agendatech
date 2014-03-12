@@ -1,17 +1,18 @@
 package controllers;
 
 import com.avaje.ebean.Ebean;
+import helper.ControladorEmails;
 import models.Evento;
 import org.apache.commons.io.FileUtils;
 import play.api.templates.Html;
 import play.data.Form;
+import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -26,20 +27,56 @@ public class EventosController extends Controller {
         return ok(view);
     }
 
-    public static Result criar() throws IOException{
-        Form<Evento> fromRequest = eventoForm.bindFromRequest();
+    public static  F.Promise<Result> criar() throws IOException{
+
+        final Form<Evento> fromRequest = eventoForm.bindFromRequest();
+
         if(fromRequest.hasErrors()){
-            return badRequest(views.html.eventos.novo.render(fromRequest));
+            return getResultPromise(fromRequest);
         }
         File destino = gravarArquivo();
-        Evento evento = fromRequest.get();
+        final Evento evento = fromRequest.get();
         evento.setCaminhoImagem(destino.getName());
         try {
             Ebean.save(evento);
+            F.Promise<Result> result = getResultPromiseFromEmail(evento);
+            return result;
         }catch (RuntimeException e){
             destino.delete();
         }
-        return redirect(routes.EventosController.listar());
+
+        return F.Promise.promise(new F.Function0<Result>() {
+            @Override
+            public Result apply() throws Throwable {
+                return redirect(routes.EventosController.listar());
+            }
+        });
+    }
+
+    private static F.Promise<Result> getResultPromiseFromEmail(final Evento evento) {
+        F.Promise<Void> enviandoEmail = F.Promise.promise(new F.Function0<Void>() {
+            @Override
+            public Void apply() throws Throwable {
+                ControladorEmails.informaNovo(evento);
+                return null;
+            }
+        });
+
+        return enviandoEmail.map(new F.Function<Void, Result>() {
+            @Override
+            public Result apply(Void aVoid) throws Throwable {
+                return redirect(controllers.routes.EventosController.listar());
+            }
+        });
+    }
+
+    private static F.Promise<Result> getResultPromise(final Form<Evento> fromRequest) {
+        return F.Promise.promise(new F.Function0<Result>() {
+            @Override
+            public Result apply() throws Throwable {
+                return badRequest(views.html.eventos.novo.render(fromRequest));
+            }
+        });
     }
 
     private static File gravarArquivo() throws IOException {

@@ -3,15 +3,17 @@
 # ~~~~
 
 # Home page
-GET         /                    controllers.Application.index()
+GET         /                     controllers.Application.index()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file        controllers.Assets.at(path="/public", file)
+GET         /assets/*file         controllers.Assets.at(path="/public", file)
 
-GET         /eventos/novo        controllers.EventosController.novo()
+GET         /eventos/novo         controllers.EventosController.novo()
 
-POST        /eventos             controllers.EventosController.criar()
+POST        /eventos              controllers.EventosController.criar()
 
-GET         /eventos             controllers.EventosController.listar()
+GET         /eventos              controllers.EventosController.listar()
 
-GET         /eventos/todos       controllers.admin.TodosEventosController.todos()
+GET         /eventos/admin        controllers.admin.TodosEventosController.todos()
+
+GET         /eventos/admin/:id<[0-9]+>    controllers.admin.TodosEventosController.aprovar(id:Integer)

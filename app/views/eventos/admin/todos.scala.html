@@ -5,7 +5,7 @@
     <h3>Não aprovados</h3>
     <ul>
         @for(evento <- naoAprovados){
-            <li>@evento.getNome() - <a href="#">Aprovar</a></li>
+            <li>@evento.getNome() - <a href="@admin.routes.TodosEventosController.aprovar(evento.getId())">Aprovar</a></li>
         }
     </ul>
     <hr/>

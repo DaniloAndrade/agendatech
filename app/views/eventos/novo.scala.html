@@ -7,7 +7,7 @@
 
     @form(routes.EventosController.criar(),'enctype -> "multipart/form-data" ){
         @inputText(eventoForm("nome"), '_label -> "Nome:")
-        @inputText(eventoForm("emailParaContato"), '_label -> "Email:", 'type -> "email")
+        @inputText(eventoForm("emailParaContato"), '_label -> "Email:", 'type -> "novo")
         @textarea(eventoForm("descricao") , '_label -> "Descrição")
         @select(
             eventoForm("estado"),

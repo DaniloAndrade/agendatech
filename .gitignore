@@ -15,4 +15,5 @@ dist
 /.settings
 .target/
 .target
-destaque/*.jpg
+public/images/destaques/*
+hs_err_*.log
