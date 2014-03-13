@@ -16,4 +16,4 @@ GET         /eventos              controllers.EventosController.listar()
 
 GET         /eventos/admin        controllers.admin.TodosEventosController.todos()
 
-GET         /eventos/admin/:id<[0-9]+>    controllers.admin.TodosEventosController.aprovar(id:Integer)
+GET         /eventos/admin/$id<[0-9]+>    controllers.admin.TodosEventosController.aprovar(id:Integer)
