@@ -31,50 +31,47 @@ public class EventosController extends Controller {
 
         final Form<Evento> fromRequest = eventoForm.bindFromRequest();
 
-        if(fromRequest.hasErrors()){
-            return getResultPromise(fromRequest);
-        }
-        File destino = gravarArquivo();
-        final Evento evento = fromRequest.get();
-        evento.setCaminhoImagem(destino.getName());
-        try {
-            Ebean.save(evento);
-            F.Promise<Result> result = getResultPromiseFromEmail(evento);
-            return result;
-        }catch (RuntimeException e){
-            destino.delete();
-        }
-
-        return F.Promise.promise(new F.Function0<Result>() {
+        F.Promise<F.Function0<Result>> promiseFromCreate = getResultFromCreateEvento(fromRequest);
+        F.Promise<Result> promise = promiseFromCreate.map(new F.Function<F.Function0<Result>, Result>() {
             @Override
-            public Result apply() throws Throwable {
-                return redirect(routes.EventosController.listar());
+            public Result apply(F.Function0<Result> resultFunction0) throws Throwable {
+                return resultFunction0.apply();
             }
         });
+        return promise;
     }
 
-    private static F.Promise<Result> getResultPromiseFromEmail(final Evento evento) {
-        F.Promise<Void> enviandoEmail = F.Promise.promise(new F.Function0<Void>() {
+    private static F.Promise<F.Function0<Result>> getResultFromCreateEvento(final Form<Evento> form){
+        return F.Promise.promise(new F.Function0<F.Function0<Result>>() {
             @Override
-            public Void apply() throws Throwable {
-                ControladorEmails.informaNovo(evento);
-                return null;
-            }
-        });
+            public F.Function0<Result> apply() throws Throwable {
 
-        return enviandoEmail.map(new F.Function<Void, Result>() {
-            @Override
-            public Result apply(Void aVoid) throws Throwable {
-                return redirect(controllers.routes.EventosController.listar());
-            }
-        });
-    }
+                if(form.hasErrors()){
+                    return new F.Function0<Result>() {
+                        @Override
+                        public Result apply() throws Throwable {
+                            return badRequest(views.html.eventos.novo.render(form));
+                        }
+                    };
+                }
+                File destino = null;
+                try{
+                    destino = gravarArquivo();
+                    final Evento evento = form.get();
+                    evento.setCaminhoImagem(destino.getName());
+                    Ebean.save(evento);
+                    ControladorEmails.informaNovo(evento);
+                }catch (Exception e){
+                    destino.delete();
+                }
 
-    private static F.Promise<Result> getResultPromise(final Form<Evento> fromRequest) {
-        return F.Promise.promise(new F.Function0<Result>() {
-            @Override
-            public Result apply() throws Throwable {
-                return badRequest(views.html.eventos.novo.render(fromRequest));
+
+                return new F.Function0<Result>(){
+                    @Override
+                    public Result apply() throws Throwable {
+                        return redirect(controllers.routes.EventosController.listar());
+                    }
+                };
             }
         });
     }
@@ -85,7 +82,6 @@ public class EventosController extends Controller {
         Http.MultipartFormData.FilePart destaque = multipartFormData.getFile("destaque");
         File file = destaque.getFile();
         File destino = getFileDistino(destaque);
-        //Files.move(file.toPath(), destino.toPath());
         FileUtils.moveFile(file, destino);
         return destino;
     }
